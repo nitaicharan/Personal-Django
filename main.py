@@ -1,4 +1,4 @@
-from fastapi import Body, FastAPI, Query, Path
+from fastapi import Body, FastAPI, Query, Path, Cookie
 from datetime import datetime, time, timedelta
 from pydantic import BaseModel, Field, HttpUrl
 from typing import Annotated
@@ -124,6 +124,10 @@ async def update_item(
 ):
     results = {"item_id": item_id, "item": item}
     return results
+
+@app.get("/items/")
+async def read_items(ads_id: Annotated[str | None, Cookie()] = None):
+    return {"ads_id": ads_id}
 
 @app.put("/items/{item_id}")
 async def read_items(
