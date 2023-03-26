@@ -1,5 +1,5 @@
 from fastapi import Body, FastAPI, Query, Path
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Annotated
 from enum import Enum
 
@@ -64,8 +64,8 @@ async def read_file(file_path: str):
 
 class Item(BaseModel):
     name: str
-    description: str | None = None
-    price: float
+    description: str | None = Field(default=None, title="The description of the item", max_length=300)
+    price: float = Field(gt=0, description="The price must be greater then zero")
     tax: float | None = None
 
 class User(BaseModel)
