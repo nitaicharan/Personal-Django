@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Query
+from fastapi import Body, FastAPI, Query, Path
 from pydantic import BaseModel
 from typing import Annotated
 from enum import Enum
@@ -68,6 +68,10 @@ class Item(BaseModel):
     price: float
     tax: float | None = None
 
+class User(BaseModel)
+    username: str
+    full_name: str | None = None
+
 @app.post("/items/")
 async def create_item(item: Item):
     item_dict = item.dict()
@@ -77,11 +81,9 @@ async def create_item(item: Item):
     return item_dict
 
 @app.put("/items/{item_id}")
-async def update_item(item_id: int, item: Item, q: str | None = None):
-    result = {"item_id": item_id, **item.dict()}
-    if q:
-        result.update({"q": q})
-    return result
+async def update_item(item_id: int, item: Annotated[Item, Body(embed=True)]):
+    results = {"item_id": item_id, "item": item}
+    return results
 
 @app.get("/items/")
 async def read_items(
