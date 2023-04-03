@@ -1,4 +1,4 @@
-from fastapi import Body, FastAPI, Query, Path, Cookie, Header
+from fastapi import Body, FastAPI, Query, Path, Cookie, Header, status
 from datetime import datetime, time, timedelta
 from pydantic import BaseModel, EmailStr, Field, HttpUrl
 from typing import Annotated
@@ -76,7 +76,7 @@ class User(BaseModel)
     username: str
     full_name: str | None = None
 
-@app.post("/items/")
+@app.post("/items/", status_code=status.HTTP_201_CREATED)
 async def create_item(item: Item):
     item_dict = item.dict()
     if item.tax:
