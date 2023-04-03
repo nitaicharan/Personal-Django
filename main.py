@@ -1,4 +1,4 @@
-from fastapi import Body, FastAPI, Query, Path, Cookie
+from fastapi import Body, FastAPI, Query, Path, Cookie, Header
 from datetime import datetime, time, timedelta
 from pydantic import BaseModel, Field, HttpUrl
 from typing import Annotated
@@ -125,9 +125,6 @@ async def update_item(
     results = {"item_id": item_id, "item": item}
     return results
 
-@app.get("/items/")
-async def read_items(ads_id: Annotated[str | None, Cookie()] = None):
-    return {"ads_id": ads_id}
 
 @app.put("/items/{item_id}")
 async def read_items(
@@ -136,6 +133,8 @@ async def read_items(
     end_datetime: Annotated[datetime | None, Body()] = None,
     repeat_at: Annotated[time | None, Body()] = None,
     process_after: Annotated[timedelta | None, Body()] = None,
+    ads_id: Annotated[str | None, Cookie] = None,
+    x_token: Annotated[list[str] | None, Header()] = None
 ):
     start_process = start_datetime + process_after
     duration = end_datetime - start_process
@@ -147,6 +146,8 @@ async def read_items(
         "process_after": process_after,
         "start_process": start_process,
         "duration": duration,
+        "ads_id": ads_id,
+        "X-Token values": x_token,
     }
 
 @app.post("/index-weights/")
