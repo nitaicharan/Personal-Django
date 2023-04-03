@@ -1,6 +1,6 @@
 from fastapi import Body, FastAPI, Query, Path, Cookie, Header
 from datetime import datetime, time, timedelta
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, EmailStr, Field, HttpUrl
 from typing import Annotated
 from enum import Enum
 from uuid import UUID
@@ -161,3 +161,20 @@ async def create_offer(offer: Offer):
 @app.post("/images/multiple/")
 async def create_multiple_images(images: list[Image]):
     return images
+
+class UserIn(BaseModel):
+    username: str
+    password: str
+    email: EmailStr
+    full_name: str | None = None
+
+
+class UserOut(BaseModel):
+    username: str
+    email: EmailStr
+    full_name: str | None = None
+
+
+@app.post("/user/", response_model=UserOut)
+async def create_user(user: UserIn) -> Any:
+    return user
