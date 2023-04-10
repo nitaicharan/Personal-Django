@@ -1,4 +1,5 @@
 from fastapi import Body, FastAPI, Query, Path, Cookie, Header, Form, Request, HTTPException
+from fastapi.encoders import jsonable_encoder
 from fastapi.exception_handlers import (
     http_exception_handler,
     request_validation_exception_handler,
@@ -92,46 +93,10 @@ async def create_item(item: Item):
     return item_dict
 
 
-@app.put("/items/{item_id}")
-async def update_item(
-    *,
-    item_id: int,
-    item: Annotated[
-        Item,
-        Body(
-            examples={
-                "normal": {
-                    "summary": "A normal example",
-                    "description": "A **normal** item works correctly.",
-                    "value": {
-                        "name": "Foo",
-                        "description": "A very nice Item",
-                        "price": 35.4,
-                        "tax": 3.2,
-                    },
-                },
-                "converted": {
-                    "summary": "An example with converted data",
-                    "description": "FastAPI can convert price `strings` to actual `numbers` automatically",
-                    "value": {
-                        "name": "Bar",
-                        "price": "35.4",
-                    },
-                },
-                "invalid": {
-                    "summary": "Invalid data is rejected with an error",
-                    "value": {
-                        "name": "Baz",
-                        "price": "thirty five point four",
-                    },
-                },
-            },
-        ),
-    ],
-):
-    results = {"item_id": item_id, "item": item}
-    return results
-
+@app.put("/items/{id}")
+def update_item(id: str, item: Item):
+    json_compatible_item_data = jsonable_encoder(item)
+    fake_db[id] = json_compatible_item_data
 
 @app.exception_handler(StarletteHTTPException)
 async def custom_http_exception_handler(request, exc):
