@@ -1,4 +1,11 @@
-from fastapi import Body, FastAPI, Query, Path, Cookie, Header, Form
+from fastapi import Body, FastAPI, Query, Path, Cookie, Header, Form, Request, HTTPException
+from fastapi.exception_handlers import (
+    http_exception_handler,
+    request_validation_exception_handler,
+)
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from fastapi.responses import JSONResponse
 from datetime import datetime, time, timedelta
 from pydantic import BaseModel, EmailStr, Field, HttpUrl
 from typing import Annotated
@@ -126,29 +133,22 @@ async def update_item(
     return results
 
 
-@app.put("/items/{item_id}")
-async def read_items(
-    item_id: UUID,
-    start_datetime: Annotated[datetime | None, Body()] = None,
-    end_datetime: Annotated[datetime | None, Body()] = None,
-    repeat_at: Annotated[time | None, Body()] = None,
-    process_after: Annotated[timedelta | None, Body()] = None,
-    ads_id: Annotated[str | None, Cookie] = None,
-    x_token: Annotated[list[str] | None, Header()] = None
-):
-    start_process = start_datetime + process_after
-    duration = end_datetime - start_process
-    return {
-        "item_id": item_id,
-        "start_datetime": start_datetime,
-        "end_datetime": end_datetime,
-        "repeat_at": repeat_at,
-        "process_after": process_after,
-        "start_process": start_process,
-        "duration": duration,
-        "ads_id": ads_id,
-        "X-Token values": x_token,
-    }
+@app.exception_handler(StarletteHTTPException)
+async def custom_http_exception_handler(request, exc):
+    print(f"OMG! An HTTP error!: {repr(exc)}")
+    return await http_exception_handler(request, exc)
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    print(f"OMG! The client sent invalid data!: {exc}")
+    return await request_validation_exception_handler(request, exc)
+
+@app.get("/items/{item_id}")
+async def read_item(item_id: int):
+    if item_id == 3:
+        raise HTTPException(status_code=418, detail="Nope! I don't like 3.")
+    return {"item_id": item_id}
 
 @app.post("/index-weights/")
 async def create_index_weights(weights: dict[int, float]):
@@ -215,3 +215,21 @@ async def create_file(
 @app.post("/uploadfiles/")
 async def create_upload_files(files: list[UploadFile]):
     return {"filenames": [file.filename for file in files]}
+
+class UnicornException(Exception):
+    def __init__(self, name: str):
+        self.name = name
+
+@app.exception_handler(UnicornException)
+async def unicorn_exception_handler(request: Request, exc: UnicornException):
+    return JSONResponse(
+        status_code=418,
+        content={"message": f"Oops! {exc.name} did something. There goes a rainbow..."},
+    )
+
+@app.get("/unicorns/{name}")
+async def read_unicorn(name: str):
+    if name == "yolo":
+        raise UnicornException(name=name)
+    return {"unicorn_name": name}
+
