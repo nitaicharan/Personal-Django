@@ -1,4 +1,4 @@
-from fastapi import Body, FastAPI, Query, Path, Cookie, Header, status
+from fastapi import Body, FastAPI, Query, Path, Cookie, Header, Form
 from datetime import datetime, time, timedelta
 from pydantic import BaseModel, EmailStr, Field, HttpUrl
 from typing import Annotated
@@ -195,3 +195,7 @@ def fake_save_user(user_in: UserIn):
 async def create_user(user_in: UserIn):
     user_saved = fake_save_user(user_in)
     return user_saved
+
+@app.post("/login/")
+async def login(username: Annotated[str, Form()], password: Annotated[str, Form()]):
+    return {"username": username}
