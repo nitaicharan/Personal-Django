@@ -108,11 +108,6 @@ items = {
 }
 
 
-@app.get("/items/{item_id}", response_model=Item)
-async def read_item(item_id: str):
-    return items[item_id]
-
-
 @app.patch("/items/{item_id}", response_model=Item)
 async def update_item(item_id: str, item: Item):
     stored_item_data = items[item_id]
@@ -133,11 +128,11 @@ async def validation_exception_handler(request, exc):
     print(f"OMG! The client sent invalid data!: {exc}")
     return await request_validation_exception_handler(request, exc)
 
+CommonsDep = Annotated[dict, Depends(common_parameters)]
+
 @app.get("/items/{item_id}")
-async def read_item(item_id: int):
-    if item_id == 3:
-        raise HTTPException(status_code=418, detail="Nope! I don't like 3.")
-    return {"item_id": item_id}
+async def read_item(commons: CommonsDep):
+    return commons
 
 @app.post("/index-weights/")
 async def create_index_weights(weights: dict[int, float]):
