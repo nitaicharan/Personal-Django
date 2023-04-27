@@ -1,0 +1,35 @@
+services:
+  db:
+    image: ${DB_IMAGE}
+    container_name: db_${APP_NAME}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    networks:
+      - app
+    env_file:
+      - .env
+
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        - APP_PORT=${APP_PORT}
+    image: ${APP_IMAGE}
+    volumes:
+      - type: bind
+        source: ./
+        target: "/${APP_NAME}"
+    container_name: app_${APP_NAME}
+    depends_on:
+      - db
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    networks:
+      - app
+
+volumes:
+  app:
+
+networks:
+  app:
