@@ -1,8 +1,8 @@
 from injector import Inject
-from app.src.application.persistences.article_persistency import ArticlePersistency
+from app.src.application.persistences.article import ArticlePersistency
 
 
-class ArticleUseCase:
+class ListArticlesUseCase:
     def __init__(self, persistancy: Inject[ArticlePersistency]):
         self.persitency = persistancy
 

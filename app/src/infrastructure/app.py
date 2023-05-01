@@ -1,10 +1,9 @@
 from fastapi import FastAPI
-from fastapi_injector import Injected, attach_injector
+from fastapi_injector import attach_injector
 from injector import Injector
 from app.src.adapters.api.articles import articles_controllers
 from app.src.adapters.spi.db.repositories.articles import ArticleRepository
-from app.src.application.persistences.article_persistency import ArticlePersistency
-from app.src.application.use_cases.article.list_articles import ArticleUseCase
+from app.src.application.persistences.article import ArticlePersistency
 
 
 def create_app() -> FastAPI:
