@@ -1,11 +1,10 @@
-from fastapi_injector import Injected
+from injector import Inject
+from app.src.application.persistences.article_persistency import ArticlePersistency
 
-from ...persistences.article_persistency import ArticlePersistency
 
-
-class ListArticleUseCase:
-    def __init__(self, persistency: ArticlePersistency = Injected(ArticlePersistency)):
-        self.persistency = persistency
+class ArticleUseCase:
+    def __init__(self, persistancy: Inject[ArticlePersistency]):
+        self.persitency = persistancy
 
     def list(self):
-        self.persistency.list()
+        return self.persitency.list()
