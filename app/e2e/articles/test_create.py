@@ -1,13 +1,16 @@
 from fastapi.testclient import TestClient
+import pytest
 from app.main import app
 import random
 import string
+from httpx import AsyncClient
 
 
 client = TestClient(app)
 
 
-def test_create():
+@pytest.mark.asyncio
+async def test_create():
     letters = string.ascii_lowercase
     body = {
         # "slug": "".join(random.choice(letters) for _ in range(10)),
@@ -22,8 +25,10 @@ def test_create():
         # "author": Auth,
     }
 
-    response = client.post(
-        url="/api/articles",
-        json=body,
-    )
+    async with AsyncClient(app=app, base_url="http://test") as client:
+        response = await client.post(
+            url="/api/articles",
+            json=body,
+        )
+
     assert response.status_code == 201
