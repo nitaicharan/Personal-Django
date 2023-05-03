@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi.testclient import TestClient
 import pytest
 from app.main import app
@@ -13,15 +14,15 @@ client = TestClient(app)
 async def test_create():
     letters = string.ascii_lowercase
     body = {
-        # "slug": "".join(random.choice(letters) for _ in range(10)),
+        "slug": "".join(random.choice(letters) for _ in range(10)),
         "title": "".join(random.choice(letters) for _ in range(10)),
-        # "description": "".join(random.choice(letters) for _ in range(10)),
-        # "body": "".join(random.choice(letters) for _ in range(10)),
-        # "tagList": list[str],
-        # "createdAt": datetime,
-        # "updatedAt": datetime,
-        # "favorited": False,
-        # "favoritesCount": 1,
+        "description": "".join(random.choice(letters) for _ in range(10)),
+        "body": "".join(random.choice(letters) for _ in range(10)),
+        "tagList": [],
+        "createdAt": datetime.now().isoformat(),
+        "updatedAt": datetime.now().isoformat(),
+        "favorited": False,
+        "favoritesCount": 1,
         # "author": Auth,
     }
 

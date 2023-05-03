@@ -14,9 +14,9 @@ class ArticleRepository(ArticlePersistency):
             session.close()
             return articles
 
-    async def add(self, articleEntity: ArticleEntity):
+    async def add(self, entity: ArticleEntity):
         with Session(engine) as session:
-            articleModel = ArticleModel(title=articleEntity.title)
-            session.add(articleModel)
+            model = ArticleModel.from_entity(entity)
+            session.add(model)
             session.commit()
             session.close()

@@ -1,16 +1,14 @@
 from datetime import datetime
-from httpx import Auth
 
 
 class ArticleEntity:
-    def __init__(self) -> None:
-        self.slug: str
-        self.title: str
-        self.description: str
-        self.body: str
-        self.tagList: list[str]
-        self.createdAt: datetime
-        self.updatedAt: datetime
-        self.favorited: bool
-        self.favoritesCount: int
-        self.author: Auth
+    slug: str
+    title: str
+    description: str
+    body: str
+    tagList: list[str] = []
+    created_at: datetime = None
+    updated_at: datetime = None
+    favorited: bool = False
+    favorites_count: int = 0
+    # author: Auth
