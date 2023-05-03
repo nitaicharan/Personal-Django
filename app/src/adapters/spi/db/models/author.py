@@ -1,18 +1,19 @@
-from sqlalchemy import Column, Date, Integer, String, table
-from sqlmodel import Field, SQLModel
+from datetime import datetime
+from pydantic import Field
+from sqlmodel import SQLModel
 
 
 class AuthorModel(SQLModel, table=True):
-    id: int= Field(primary_key=True)
-    # email = Column(String, unique=True, index=True)
-    # token = Column(String, unique=True, index=True)
-    # username = Column(String, unique=True, index=True)
-    # bio = Column(String)
-    # image = Column(String)
-    # password = Column(String)
-    # createdAt = Column(Date)
-    # updatedAt = Column(Date)
-    # articles = relationship("ArticleTable", back_populates="author")
+    id: int = Field(default=None, primary_key=True)
+    email: str
+    username: str
+    token: str | None
+    bio: str | None
+    image: str | None
+    password: str | None
+    createdAt: datetime | None
+    updatedAt: datetime | None
+    # articles: List[ArticleModel]
 
     class Config:
         orm_mode = True

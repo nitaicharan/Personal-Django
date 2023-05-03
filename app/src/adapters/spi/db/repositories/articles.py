@@ -1,5 +1,5 @@
 from sqlmodel import Session, select
-from app.src.adapters.spi.db.models.aticle import ArticleModel
+from app.src.adapters.spi.db.models.article import ArticleModel
 from app.src.application.persistences.article import ArticlePersistency
 from app.src.entities.article import ArticleEntity
 from .schema import engine
