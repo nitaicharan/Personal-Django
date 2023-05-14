@@ -3,6 +3,7 @@ from app.src.entities.author import AuthorEntity
 
 
 class ArticleEntity:
+    id: int
     slug: str
     title: str
     description: str

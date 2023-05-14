@@ -11,3 +11,7 @@ class ArticlePersistency(ABC):
     @abstractmethod
     async def add(self, entity: ArticleEntity) -> str:
         raise NotImplementedError
+
+    @abstractmethod
+    async def find(self, id: int) -> ArticleEntity:
+        raise NotImplementedError

@@ -19,4 +19,13 @@ class ArticleRepository(ArticlePersistency):
             model = ArticleModel.from_entity(entity)
             session.add(model)
             session.commit()
+            entity = model.to_entity()
             session.close()
+            return entity
+
+    async def find(self, id: int):
+        with Session(engine) as session:
+            statement = select(ArticleModel).where(ArticleModel.id == id)
+            entity = session.exec(statement).one()
+            session.close()
+            return entity

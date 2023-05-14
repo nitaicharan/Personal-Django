@@ -11,7 +11,7 @@ client = TestClient(app)
 
 
 @pytest.mark.asyncio
-async def test_create():
+async def test_find():
     letters = string.ascii_lowercase
     body = {
         "slug": "".join(random.choice(letters) for _ in range(10)),
@@ -28,12 +28,14 @@ async def test_create():
     }
 
     async with AsyncClient(app=app, base_url="http://test") as client:
-        response = await client.post(
+        saved_request = await client.post(
             url="/api/articles",
             json=body,
         )
+        saved_entity = saved_request.json()
 
-    assert response.status_code == 200
+        found_request = await client.get(url="/api/articles/" + str(saved_entity["id"]))
+        found_entity = found_request.json()
 
-    result =  response.json()
-    assert result["slug"] == body["slug"]
+        assert found_request.status_code == 200
+        assert found_entity["id"] == saved_entity["id"]

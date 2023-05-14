@@ -1,6 +1,13 @@
+# from app.src.entities.article import ArticleEntity
+
+
 class AuthorEntity:
-    def __init__(self) -> None:
-        self.username = str
-        self.bio = str
-        self.image = str
-        self.following = bool
+    id: int
+    email: str
+    username: str
+    password: str
+    token: str | None = None
+    bio: str | None = None
+    image: str | None = None
+    following: bool = False
+    # articles: list[ArticleEntity] | None = []

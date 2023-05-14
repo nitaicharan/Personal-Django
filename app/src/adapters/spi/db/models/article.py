@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlmodel import Field, SQLModel
 from app.src.entities.article import ArticleEntity
 
@@ -9,8 +10,8 @@ class ArticleModel(SQLModel, table=True):
     description: str
     body: str
     # tagList: list[str]
-    created_at: str | None = None
-    updated_at: str | None = None
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
     favorited: bool
     favorites_count: int
     author_id: int | None = Field(default=None, foreign_key="articlemodel.id")
@@ -27,6 +28,18 @@ class ArticleModel(SQLModel, table=True):
             favorites_count=entity.favorites_count,
         )
         return model
+
+    def to_entity(self):
+        entity = ArticleEntity()
+        entity.id = self.id
+        entity.slug = self.slug
+        entity.description = self.description
+        entity.body = self.body
+        entity.created_at = self.created_at
+        entity.updated_at = self.updated_at
+        entity.favorited = self.favorited
+        entity.favorites_count = self.favorites_count
+        return entity
 
     class Config:
         orm_mode = True
