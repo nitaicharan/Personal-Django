@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "app"}]
 
 [tool.poetry.scripts]
-start = "poetry run uvicorn app.main:app --reload"
+start = "app.main:main"
 test = "poetry run pytest-watch"
 
 [tool.poetry.dependencies]
@@ -20,6 +20,7 @@ sqlmodel = "^0.0.8"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^6.0.0"
+uvicorn = "^0.30.3"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.3.1"
@@ -29,3 +30,11 @@ pytest-asyncio = "^0.21.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pyprojectx.aliases]
+# convenience shortcuts
+run = "poetry run"
+shell = "poetry shell"
+test = "poetry run pytest"
+lint = ["ruff check"]
+check = ["@lint", "@test"]
